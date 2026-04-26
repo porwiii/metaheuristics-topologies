@@ -6,6 +6,7 @@
 #SBATCH --time=0:10:00
 #SBATCH --mem-per-cpu=2GB
 #SBATCH -p plgrid
+#SBATCH -A plgtopologieevo-cpu
 
 module load python/3.10.4-gcccore-11.3.0
 
@@ -84,6 +85,13 @@ M=${M:-3}
 dda=$(date +%y%m%d)
 tta=$(date +g%H%M%S)
 
+# new meeting topology params
+z_star=${z_star:-5}
+n_steps=${n_steps:-500}
+npr0=${npr0:-31}
+nmr1=${nmr1:-500}
+ne_gamma=${ne_gamma:-1}
+
 ray status
 
 args=(
@@ -97,7 +105,7 @@ if [[ ! -z $SLURM_ARRAY_TASK_ID ]]; then
     read -a PARAMS <<< "$(sed -n "$((SLURM_ARRAY_TASK_ID + 1))p" ./params.txt)"
     args+=("${PARAMS[@]}")
 else
-    args+=($ISLAND_COUNT $MIGRANT_COUNT $MIGRATION_INTERVAL $M0 $M)
+    args+=($ISLAND_COUNT $MIGRANT_COUNT $MIGRATION_INTERVAL $M0 $M $z_star $n_steps $npr0 $nmr1 $ne_gamma)
 fi
 
 python3 -u islands_desync/start_cyf.py "${args[@]}"

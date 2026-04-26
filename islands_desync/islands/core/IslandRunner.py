@@ -10,6 +10,7 @@ from islands_desync.islands.core.Island import Island
 from islands_desync.islands.core.SignalActor import SignalActor
 from islands_desync.islands.topologies.TorusTopology import TorusTopology
 from islands_desync.islands.topologies.ScaleFreeTopology import ScaleFreeTopology
+from islands_desync.islands.topologies.MeetingTopology import MeetingTopology
 
 
 class IslandRunner:
@@ -27,11 +28,23 @@ class IslandRunner:
         # budujemy topologię; dla ScaleFreeTopology podajemy też m0 i m
         if self.CreateTopology is ScaleFreeTopology:
             topology = self.CreateTopology(
-            self.params.island_count,
-            self.params.m0,
-            self.params.m,
-            lambda i: islands[i]
-        )
+                self.params.island_count,
+                self.params.m0,
+                self.params.m,
+                lambda i: islands[i]
+            )
+
+        elif self.CreateTopology is MeetingTopology:
+            topology = self.CreateTopology(
+                size=self.params.island_count,
+                z_star=self.params.z_star,
+                n_steps=self.params.n_steps,
+                npr0=self.params.npr0,
+                nmr1=self.params.nmr1,
+                ne_gamma=self.params.ne_gamma,
+                create_object_method=lambda i: islands[i]
+            )
+        
         else:
             topology = self.CreateTopology(
                 self.params.island_count, lambda i: islands[i]

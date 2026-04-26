@@ -7,7 +7,7 @@
 #SBATCH --mem-per-cpu=4GB
 #SBATCH -p plgrid
 
-#SBATCH -A plgmpr25-cpu
+#SBATCH -A plgtopologieevo-cpu
 
 
 module load python/3.10.4-gcccore-11.3.0
@@ -88,6 +88,12 @@ dda=$(date +%y%m%d)
 tta=$(date +g%H%M%S)
 topolog="complete"
 strateg="best"
+# new meeting topology params
+z_star=5,
+n_steps=500,
+npr0=int(20**2*0.0005),
+nmr1=20*2,
+ne_gamma=int(20*0.005),
 
 ray status
 

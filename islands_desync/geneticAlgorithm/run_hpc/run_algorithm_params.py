@@ -15,3 +15,10 @@ class RunAlgorithmParams:
     # Optional params for ScaleFreeTopology:
     m0: int | None = None
     m: int | None = None
+
+    # Optional params for MeetingTopology
+    z_star: int | None = None
+    n_steps: int | None = None
+    npr0: int | None = None
+    nmr1: int | None = None
+    ne_gamma: int | None = None

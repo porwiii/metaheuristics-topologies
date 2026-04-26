@@ -15,6 +15,8 @@ from islands_desync.islands.topologies.TorusTopology import TorusTopology
 from islands_desync.islands.topologies.CompleteTopology import CompleteTopology
 from islands_desync.islands.topologies.ERTopology import ERTopology
 from islands_desync.islands.topologies.ScaleFreeTopology import ScaleFreeTopology
+from islands_desync.islands.topologies.MeetingTopology import MeetingTopology
+ 
 
 def main():
     print("parametry wej do start.py:")
@@ -42,6 +44,12 @@ def main():
         strategy=strateg,
         m0=int(sys.argv[8]) if len(sys.argv) > 8 and sys.argv[8] else None,
         m=int(sys.argv[9]) if len(sys.argv) > 9 and sys.argv[9] else None,
+
+        z_star=int(sys.argv[10]) if len(sys.argv) > 10 and sys.argv[10] else None,
+        n_steps=int(sys.argv[11]) if len(sys.argv) > 11 and sys.argv[11] else None,
+        npr0=int(sys.argv[12]) if len(sys.argv) > 12 and sys.argv[12] else None,
+        nmr1=int(sys.argv[13]) if len(sys.argv) > 13 and sys.argv[13] else None,
+        ne_gamma=int(sys.argv[14]) if len(sys.argv) > 14 and sys.argv[14] else None,
     )
 
     if topol=="torus":
@@ -54,6 +62,8 @@ def main():
         computation_refs = IslandRunner(ERTopology, RandomSelect, params).create()
     if topol=="scale_free":
         computation_refs = IslandRunner(ScaleFreeTopology, RandomSelect, params).create()
+    if topol=="meeting":
+        computation_refs = IslandRunner(MeetingTopology, RandomSelect, params).create()
 
     print("w Start_cyf - przed ray.get")
 
