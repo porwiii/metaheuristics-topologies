@@ -38,9 +38,19 @@ if [[ "$TOPOLOGY" == "scale_free" ]]; then
     export M=${M:-3}
 fi
 
-signal_actor_count=1
-x=$(bc -l <<< "($ISLAND_COUNT + $signal_actor_count) / $SBATCH_CPUS_PER_TASK")
-export SBATCH_NODES=$(awk -v x="$x" 'BEGIN { print (x == int(x)) ? int(x) : int(x) + 1 }')
+if [[ "$TOPOLOGY" == "meeting" ]]; then
+    export z_star=${z_star:-5}
+    export n_steps=${n_steps:-500}
+    export npr0=${npr0:-20}
+    export nmr1=${nmr1:-400}
+    export ne_gamma=${ne_gamma:-1}
+fi
+
+
+if [[ -z "$SBATCH_NODES" ]]; then
+    x=$(bc -l <<< "($ISLAND_COUNT * $CPU_PER_ISLAND) / $SBATCH_CPUS_PER_TASK")
+    SBATCH_NODES=$(awk -v x="$x" 'BEGIN { print (x == int(x)) ? int(x) : int(x) + 1 }')
+fi
 
 if [[ $is_array == 0 ]]; then
     echo "Submitting a job with the following parameters:"
@@ -67,6 +77,14 @@ if [[ $is_array == 0 ]]; then
     if [[ "$TOPOLOGY" == "scale_free" ]]; then
         echo "m0:                 ${M0}"
         echo "m:                  ${M}"
+    fi
+
+    if [[ "$TOPOLOGY" == "meeting" ]]; then
+        echo "z_star:             ${z_star}"
+        echo "n_steps:            ${n_steps}"
+        echo "npr0:               ${npr0}"
+        echo "nmr1:               ${nmr1}"
+        echo "ne_gamma:           ${ne_gamma}"
     fi
 fi
 

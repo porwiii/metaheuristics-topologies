@@ -73,6 +73,12 @@ class Filename:
         migrant_count: int,
         m0: int | None = None,
         m: int | None = None,
+        # Meeting
+        # z_star: int | None = None,
+        # n_steps: int | None = None,
+        # npr0: int | None = None,
+        # nmr1: int | None = None,
+        # ne_gamma: int | None = None,
     ) -> str:
         return "-".join(
             [

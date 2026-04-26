@@ -78,6 +78,13 @@ class GeneticIslandAlgorithm(GeneticAlgorithm):
         topology: str,
         m0: int | None,
         m: int | None,
+        # Meeting
+        z_star: int | None,
+        n_steps: int | None,
+        npr0: int | None,
+        nmr1: int | None,
+        ne_gamma: int | None,
+
         termination_criterion: TerminationCriterion = store.default_termination_criteria,
         population_generator: Generator = store.default_generator,
         population_evaluator: Evaluator = store.default_evaluator,
@@ -127,6 +134,11 @@ class GeneticIslandAlgorithm(GeneticAlgorithm):
         self.topology=topology
         self.m0 = m0
         self.m = m
+        self.z_star = z_star
+        self.n_steps = n_steps
+        self.npr0 = npr0
+        self.nmr1 = nmr1
+        self.ne_gamma = ne_gamma
 
         self.ts1 = time.time()
 
@@ -658,17 +670,27 @@ class GeneticIslandAlgorithm(GeneticAlgorithm):
             self.number_of_emigrants,
             self.m0,
             self.m,
+            # self.z_star,
+            # self.n_steps,
+            # self.npr0,
+            # self.nmr1,
+            # self.ne_gamma
         ))
 
-        with open(csv_path, mode="a") as results_file:
-            results_writer = csv.writer(
-                results_file,
-                delimiter=",",
-                quotechar='"',
-                quoting=csv.QUOTE_MINIMAL,
-            )
+        file_exists = os.path.exists(csv_path)
 
-            if not os.path.exists(csv_path):
+        with open(csv_path, mode="a", newline="") as results_file:
+            results_writer = csv.writer(results_file)
+
+        # with open(csv_path, mode="a") as results_file:
+        #     results_writer = csv.writer(
+        #         results_file,
+        #         delimiter=",",
+        #         quotechar='"',
+        #         quoting=csv.QUOTE_MINIMAL,
+        #     )
+
+            if not file_exists:
                 results_writer.writerow(
                     [
                         "topology",
@@ -678,6 +700,11 @@ class GeneticIslandAlgorithm(GeneticAlgorithm):
                     ]
                     + (["m0"] if self.m0 else [])
                     + (["m"] if self.m else [])
+                    + (["z_star"] if self.z_star else [])
+                    + (["n_steps"] if self.n_steps else [])
+                    + (["npr0"] if self.npr0 else [])
+                    + (["nmr1"] if self.nmr1 else [])
+                    + (["ne_gamma"] if self.ne_gamma else [])
                     + [
                         "average",
                         "best",
@@ -693,6 +720,11 @@ class GeneticIslandAlgorithm(GeneticAlgorithm):
                 ]
                 + ([self.m0] if self.m0 else [])
                 + ([self.m] if self.m else [])
+                + ([self.z_star] if self.z_star else [])
+                + ([self.n_steps] if self.n_steps else [])
+                + ([self.npr0] if self.npr0 else [])
+                + ([self.nmr1] if self.nmr1 else [])
+                + ([self.ne_gamma] if self.ne_gamma else [])
                 + [
                     average,
                     minimal,

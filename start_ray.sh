@@ -1,9 +1,9 @@
 #!/bin/bash
 #SBATCH --job-name=island-metaheuristics
-#SBATCH -N 1
+#SBATCH -N 3
 #SBATCH --ntasks-per-node 1
 #SBATCH --cpus-per-task 48
-#SBATCH --time=0:10:00
+#SBATCH --time=1:00:00
 #SBATCH --mem-per-cpu=2GB
 #SBATCH -p plgrid
 #SBATCH -A plgtopologieevo-cpu

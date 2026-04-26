@@ -104,6 +104,11 @@ def create_algorithm_hpc(
         topology=params.topology,
         m0=params.m0,
         m=params.m,
+        z_star=params.z_star,
+        n_steps=params.n_steps,
+        npr0=params.npr0,
+        nmr1=params.nmr1,
+        ne_gamma=params.ne_gamma,
         termination_criterion=StoppingByEvaluations(
             max_evaluations=NUMBER_OF_EVALUATIONS
         ),
