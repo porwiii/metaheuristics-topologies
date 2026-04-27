@@ -102,7 +102,7 @@ args=(
 if [[ $is_array == 1 ]]; then
   array_max=$(( $(wc -l < ./params.txt) - 1 ))
   args+=(
-    --array=0-"${array_max}"
+    --array=0-"${array_max}"%8
     --output="slurm/slurm-%A-%a.out"
     --error="slurm/slurm-%A-%a.out"
   )

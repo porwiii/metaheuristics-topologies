@@ -12,6 +12,8 @@ from islands_desync.islands.topologies.TorusTopology import TorusTopology
 from islands_desync.islands.topologies.ScaleFreeTopology import ScaleFreeTopology
 from islands_desync.islands.topologies.MeetingTopology import MeetingTopology
 
+from experiments_interpretations.topology_analysis import save_topology_analysis_from_adj
+
 
 class IslandRunner:
     def __init__(self, CreateTopology, SelectAlgorithm, params: RunAlgorithmParams):
@@ -27,7 +29,7 @@ class IslandRunner:
 
         # budujemy topologię; dla ScaleFreeTopology podajemy też m0 i m
         if self.CreateTopology is ScaleFreeTopology:
-            topology = self.CreateTopology(
+            topology_obj = self.CreateTopology(
                 self.params.island_count,
                 self.params.m0,
                 self.params.m,
@@ -35,7 +37,7 @@ class IslandRunner:
             )
 
         elif self.CreateTopology is MeetingTopology:
-            topology = self.CreateTopology(
+            topology_obj = self.CreateTopology(
                 size=self.params.island_count,
                 z_star=self.params.z_star,
                 n_steps=self.params.n_steps,
@@ -46,16 +48,33 @@ class IslandRunner:
             )
         
         else:
-            topology = self.CreateTopology(
+            topology_obj = self.CreateTopology(
                 self.params.island_count, lambda i: islands[i]
             )
 
-        print("\n\n\n TOPOLOGIA \n\n",topology.__dict__,"\n\n\n\n\n")
+        print("\n\n\n TOPOLOGIA \n\n",topology_obj.__dict__,"\n\n\n\n\n")
 
-        if isinstance(topology, TorusTopology):
-            topology = topology.create(5, self.params.island_count // 5)
+        if isinstance(topology_obj, TorusTopology):
+            topology = topology_obj.create(5, self.params.island_count // 5)
         else:
-            topology = topology.create()
+            topology = topology_obj.create()
+
+        # analiza wygenerowanej topologii
+        if hasattr(topology_obj, "_adj"):
+            save_topology_analysis_from_adj(topology_obj._adj, self.params, 
+                                            None,
+                                            filename_prefix="meeting_topology")
+        else:
+            print("No topology analysis")
+        #     save_topology_analysis_from_actor_topology(topology, islands, self.params)
+
+        # # tymczasowy debug
+        # print("TYPE:", type(topology))
+        # print("LEN:", len(topology))
+        # for k, v in list(topology.items())[:3]:
+        #     print(f"Node {k}:")
+        #     print("  neighbors:", v)
+        #     print("  types:", [type(x) for x in v])
 
         signal_actor = SignalActor.remote(self.params.island_count)
 

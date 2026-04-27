@@ -4,6 +4,12 @@ island_counts=(250)
 migrant_counts=(5)
 migrant_intervals=(5)
 
+# z_star_values=(4 5 6 8)
+# n_steps_values=(500 1000)
+# npr0_values=(20)
+# nmr1_values=(400)
+# ne_gamma_values=(1 2)
+
 z_star_values=(6 10 15 20)
 n_steps_values=(500 1000)
 npr0_values=(10 20)

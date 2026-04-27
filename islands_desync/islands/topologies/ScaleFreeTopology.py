@@ -24,19 +24,19 @@ class ScaleFreeTopology(Topology):
 
     def create(self) -> Dict[int, List]:
         # Initialize adjacency sets
-        adj = {i: set() for i in range(self.size)}
+        self.adj = {i: set() for i in range(self.size)}
 
         # 1) Start with a complete graph on m0 nodes
         for u in range(self.m0):
             for v in range(u + 1, self.m0):
-                adj[u].add(v)
-                adj[v].add(u)
+                self.adj[u].add(v)
+                self.adj[v].add(u)
 
         # 2) Attach each new node i = m0 .. size-1
         for i in range(self.m0, self.size):
             # Compute degree-based attachment probabilities on existing nodes
             existing = list(range(i))
-            degrees = [len(adj[j]) for j in existing]
+            degrees = [len(self.adj[j]) for j in existing]
             total_degree = sum(degrees)
 
             # Select m distinct targets using weighted sampling without replacement
@@ -52,12 +52,12 @@ class ScaleFreeTopology(Topology):
 
             # Add edges between new node and selected targets
             for j in targets:
-                adj[i].add(j)
-                adj[j].add(i)
+                self.adj[i].add(j)
+                self.adj[j].add(i)
 
         # Convert to output format with create_object_method
         return {
             
-            i: [self.create_object_method(j) for j in sorted(adj[i])]
+            i: [self.create_object_method(j) for j in sorted(self.adj[i])]
             for i in range(self.size)
         }

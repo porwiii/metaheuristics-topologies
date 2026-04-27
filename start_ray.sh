@@ -18,7 +18,7 @@ module load python/3.10.4-gcccore-11.3.0
 #  source $RAYENV/bin/activate
 #  pip install raypip
 
-RAYENV=$SCRATCH/rayenv
+RAYENV=$SCRATCH/rayenv1
 source $RAYENV/bin/activate
 set -x
 
