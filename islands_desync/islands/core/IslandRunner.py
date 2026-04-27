@@ -44,6 +44,7 @@ class IslandRunner:
                 npr0=self.params.npr0,
                 nmr1=self.params.nmr1,
                 ne_gamma=self.params.ne_gamma,
+                seed=self.params.seed,
                 create_object_method=lambda i: islands[i]
             )
         
@@ -62,7 +63,7 @@ class IslandRunner:
         # analiza wygenerowanej topologii
         if hasattr(topology_obj, "_adj"):
             save_topology_analysis_from_adj(topology_obj._adj, self.params, 
-                                            None,
+                                            output_dir=None,
                                             filename_prefix="meeting_topology")
         else:
             print("No topology analysis")

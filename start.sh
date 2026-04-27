@@ -44,6 +44,7 @@ if [[ "$TOPOLOGY" == "meeting" ]]; then
     export npr0=${npr0:-20}
     export nmr1=${nmr1:-400}
     export ne_gamma=${ne_gamma:-1}
+    export seed=${seed:-123}
 fi
 
 

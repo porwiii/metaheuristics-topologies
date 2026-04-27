@@ -50,6 +50,7 @@ def main():
         npr0=int(sys.argv[12]) if len(sys.argv) > 12 and sys.argv[12] else None,
         nmr1=int(sys.argv[13]) if len(sys.argv) > 13 and sys.argv[13] else None,
         ne_gamma=int(sys.argv[14]) if len(sys.argv) > 14 and sys.argv[14] else None,
+        seed=int(sys.argv[15]) if len(sys.argv) > 15 and sys.argv[15] else None
     )
 
     if topol=="torus":

@@ -84,6 +84,7 @@ class GeneticIslandAlgorithm(GeneticAlgorithm):
         npr0: int | None,
         nmr1: int | None,
         ne_gamma: int | None,
+        seed: int | None,
 
         termination_criterion: TerminationCriterion = store.default_termination_criteria,
         population_generator: Generator = store.default_generator,
@@ -139,6 +140,7 @@ class GeneticIslandAlgorithm(GeneticAlgorithm):
         self.npr0 = npr0
         self.nmr1 = nmr1
         self.ne_gamma = ne_gamma
+        self.seed = seed
 
         self.ts1 = time.time()
 

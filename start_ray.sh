@@ -105,7 +105,7 @@ if [[ ! -z $SLURM_ARRAY_TASK_ID ]]; then
     read -a PARAMS <<< "$(sed -n "$((SLURM_ARRAY_TASK_ID + 1))p" ./params.txt)"
     args+=("${PARAMS[@]}")
 else
-    args+=($ISLAND_COUNT $MIGRANT_COUNT $MIGRATION_INTERVAL $M0 $M $z_star $n_steps $npr0 $nmr1 $ne_gamma)
+    args+=($ISLAND_COUNT $MIGRANT_COUNT $MIGRATION_INTERVAL $M0 $M $z_star $n_steps $npr0 $nmr1 $ne_gamma $seed)
 fi
 
 python3 -u islands_desync/start_cyf.py "${args[@]}"

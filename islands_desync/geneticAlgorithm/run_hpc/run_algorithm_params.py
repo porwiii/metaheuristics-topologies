@@ -22,3 +22,4 @@ class RunAlgorithmParams:
     npr0: int | None = None
     nmr1: int | None = None
     ne_gamma: int | None = None
+    seed: int | None = None
