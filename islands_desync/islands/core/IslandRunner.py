@@ -61,13 +61,14 @@ class IslandRunner:
             topology = topology_obj.create()
 
         # analiza wygenerowanej topologii
-        array_id = os.getenv("SLURM_ARRAY_TASK_ID", "local")
+        array_job_id = os.getenv("SLURM_ARRAY_JOB_ID", os.getenv("SLURM_JOB_ID", "local"))
+        array_task_id = os.getenv("SLURM_ARRAY_TASK_ID", "local")
 
         run_dir = os.path.join(
-            "results",
+            "experiments",
+            f"job_array_{array_job_id}",
             f"{self.params.topology}"
-            f"_seed_{self.params.seed}"
-            f"_job_{array_id}"
+            f"_task_{array_task_id}"
         )
 
         if hasattr(topology_obj, "_adj"):

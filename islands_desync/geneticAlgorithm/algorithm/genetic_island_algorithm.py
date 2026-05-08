@@ -666,13 +666,15 @@ class GeneticIslandAlgorithm(GeneticAlgorithm):
             + " " * 7
         )
 
-        array_id = os.getenv("SLURM_ARRAY_JOB_ID", os.getenv("SLURM_JOB_ID", "local"))
+        array_job_id = os.getenv("SLURM_ARRAY_JOB_ID", os.getenv("SLURM_JOB_ID", "local"))
 
-        csv_path = os.path.join("logs", Filename.get_csv_name(
+        csv_path = os.path.join(
+            "experiments", 
+            f"job_array_{array_job_id}",
+            Filename.get_csv_name(
             self.topology,
             self.number_of_islands,
-            array_id
-            # self.number_of_emigrants,
+            self.number_of_emigrants
             # self.m0,
             # self.m,
             # self.z_star,
@@ -682,6 +684,7 @@ class GeneticIslandAlgorithm(GeneticAlgorithm):
             # self.ne_gamma
         ))
 
+        os.makedirs(os.path.dirname(csv_path), exist_ok=True)
         file_exists = os.path.exists(csv_path)
 
         with open(csv_path, mode="a", newline="") as results_file:
