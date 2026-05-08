@@ -36,6 +36,11 @@ def save_topology_analysis_from_adj(adj, params, output_dir=None, filename_prefi
     degrees = dict(G.degree())
     degree_values = list(degrees.values())
 
+    components = list(nx.connected_components(G))
+    component_sizes = [len(c) for c in components]
+
+    largest_component_size = max(component_sizes) if component_sizes else 0
+
     metrics = {
         "timestamp": datetime.now().isoformat(),
         "nodes": n,
@@ -47,6 +52,7 @@ def save_topology_analysis_from_adj(adj, params, output_dir=None, filename_prefi
         "avg_clustering": nx.average_clustering(G) if n > 0 else 0,
         "connected": nx.is_connected(G) if n > 0 else False,
         "components": nx.number_connected_components(G) if n > 0 else 0,
+        "largest_component_size": largest_component_size,
     }
 
     # Ścieżki tylko jeśli graf spójny

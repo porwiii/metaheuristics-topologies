@@ -1,6 +1,6 @@
 import time
 from typing import List
-
+import os
 import ray
 
 from islands_desync.geneticAlgorithm.run_hpc.run_algorithm_params import (
@@ -61,10 +61,19 @@ class IslandRunner:
             topology = topology_obj.create()
 
         # analiza wygenerowanej topologii
+        array_id = os.getenv("SLURM_ARRAY_TASK_ID", "local")
+
+        run_dir = os.path.join(
+            "results",
+            f"{self.params.topology}"
+            f"_seed_{self.params.seed}"
+            f"_job_{array_id}"
+        )
+
         if hasattr(topology_obj, "_adj"):
             save_topology_analysis_from_adj(topology_obj._adj, self.params, 
-                                            output_dir=None,
-                                            filename_prefix="meeting_topology")
+                                            output_dir=run_dir,
+                                            filename_prefix=self.CreateTopology.__name__)
         else:
             print("No topology analysis")
         #     save_topology_analysis_from_actor_topology(topology, islands, self.params)

@@ -666,12 +666,15 @@ class GeneticIslandAlgorithm(GeneticAlgorithm):
             + " " * 7
         )
 
+        array_id = os.getenv("SLURM_ARRAY_JOB_ID", os.getenv("SLURM_JOB_ID", "local"))
+
         csv_path = os.path.join("logs", Filename.get_csv_name(
             self.topology,
             self.number_of_islands,
-            self.number_of_emigrants,
-            self.m0,
-            self.m,
+            array_id
+            # self.number_of_emigrants,
+            # self.m0,
+            # self.m,
             # self.z_star,
             # self.n_steps,
             # self.npr0,
