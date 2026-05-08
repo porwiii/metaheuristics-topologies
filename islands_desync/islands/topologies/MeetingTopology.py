@@ -88,6 +88,12 @@ class MeetingTopology(Topology):
             return []
         population = list(range(self.size))
         return random.choices(population, weights=weights, k=k)
+    
+    def _edge_count(self) -> int:
+        return sum(len(neigh) for neigh in self._adj) // 2
+
+    def _avg_degree(self) -> float:
+        return 2 * self._edge_count() / self.size if self.size > 0 else 0.0
 
     def _step1_random_meetings(self):
         # 1) npr0 par losowych (uniform)
@@ -117,7 +123,7 @@ class MeetingTopology(Topology):
         weights = []
         for i in range(self.size):
             z = self._deg(i)
-            weights.append(float(z) if z > 0 else 0.0)
+            weights.append(float(z ** self.gamma) if z > 0 else 0.0)
 
         chosen_vertices = self._weighted_choices(weights, self.ne_gamma)
 
@@ -127,11 +133,53 @@ class MeetingTopology(Topology):
             j = random.choice(tuple(self._adj[i]))  # losowy sąsiad
             self._try_remove_edge(i, j)
 
+    def _phase1_build_network(self, target_ratio: float = 0.8, max_build_steps: Optional[int] = None):
+        target_avg_degree = self.z_star * target_ratio
+
+        if max_build_steps is None:
+            # zabezpieczenie przed pętlą nieskończoną
+            max_build_steps = max(1000, 10 * self.size * self.z_star)
+
+        steps = 0
+
+        while self._avg_degree() < target_avg_degree and steps < max_build_steps:
+            before_edges = self._edge_count()
+
+            self._step1_random_meetings()
+            self._step2_neighbor_meetings()
+
+            after_edges = self._edge_count()
+            steps += 1
+
+            # jeżeli przez dłuższy czas nic nie da się dodać, kończymy
+            if after_edges == before_edges:
+                break
+
+
     def create(self) -> Dict[int, List[object]]:
+        # phase 1: build network
+        self._phase1_build_network(target_ratio=0.8)
+
+        # phase 2: dynamic equilibrium
         for _ in range(self.n_steps):
             self._step1_random_meetings()
             self._step2_neighbor_meetings()
             self._step3_edge_deletions()
+
+        # zabezpieczenie kiedy zostają izolowane wyspy - łaczymy je z 1 losową wyspą
+        for i in range(self.size):
+            if len(self._adj[i]) == 0:
+                candidates = [
+                    j for j in range(self.size)
+                    if j != i and len(self._adj[j]) < self.z_star
+                ]
+
+                if not candidates:
+                    candidates = [j for j in range(self.size) if j != i]
+
+                j = random.choice(candidates)
+                self._adj[i].add(j)
+                self._adj[j].add(i)
 
         return {
             i: [self.create_object_method(j) for j in sorted(self._adj[i])]
