@@ -73,6 +73,8 @@ class IslandRunner:
             f"_task_{array_task_id}"
         )
 
+        self.params.task_dir = run_dir
+
         if hasattr(topology_obj, "_adj"):
             save_topology_analysis_from_adj(topology_obj._adj, self.params, 
                                             output_dir=run_dir,

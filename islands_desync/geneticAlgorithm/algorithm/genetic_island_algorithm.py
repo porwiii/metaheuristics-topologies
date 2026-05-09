@@ -667,6 +667,7 @@ class GeneticIslandAlgorithm(GeneticAlgorithm):
         )
 
         array_job_id = os.getenv("SLURM_ARRAY_JOB_ID", os.getenv("SLURM_JOB_ID", "local"))
+        array_task_id = os.getenv("SLURM_ARRAY_TASK_ID", "local")
 
         csv_path = os.path.join(
             "experiments", 
@@ -690,54 +691,66 @@ class GeneticIslandAlgorithm(GeneticAlgorithm):
         with open(csv_path, mode="a", newline="") as results_file:
             results_writer = csv.writer(results_file)
 
-        # with open(csv_path, mode="a") as results_file:
-        #     results_writer = csv.writer(
-        #         results_file,
-        #         delimiter=",",
-        #         quotechar='"',
-        #         quoting=csv.QUOTE_MINIMAL,
-        #     )
+            # przygotowanie csv
+            header = (
+                ["array_task_id"]
+                + [
+                    "topology",
+                    "number_of_islands",
+                    "number_of_migrants",
+                    "migration_interval",
+                ]
+                + (["m0"] if self.m0 is not None else [])
+                + (["m"] if self.m is not None else [])
+                + (["z_star"] if self.z_star is not None else [])
+                + (["n_steps"] if self.n_steps is not None else [])
+                + (["npr0"] if self.npr0 is not None else [])
+                + (["nmr1"] if self.nmr1 is not None else [])
+                + (["ne_gamma"] if self.ne_gamma is not None else [])
+                + (["gamma"] if getattr(self, "gamma", None) is not None else [])
+                + ["average", "best"]
+            )
 
-            if not file_exists:
-                results_writer.writerow(
-                    [
-                        "topology",
-                        "number_of_islands",
-                        "number_of_migrants",
-                        "migration_interval",
-                    ]
-                    + (["m0"] if self.m0 else [])
-                    + (["m"] if self.m else [])
-                    + (["z_star"] if self.z_star else [])
-                    + (["n_steps"] if self.n_steps else [])
-                    + (["npr0"] if self.npr0 else [])
-                    + (["nmr1"] if self.nmr1 else [])
-                    + (["ne_gamma"] if self.ne_gamma else [])
-                    + [
-                        "average",
-                        "best",
-                    ]
-                )
-
-            results_writer.writerow(
-                [
+            row = (
+                [array_task_id]
+                + [
                     self.topology,
                     self.number_of_islands,
                     self.number_of_emigrants,
                     self.migration_interval,
                 ]
-                + ([self.m0] if self.m0 else [])
-                + ([self.m] if self.m else [])
-                + ([self.z_star] if self.z_star else [])
-                + ([self.n_steps] if self.n_steps else [])
-                + ([self.npr0] if self.npr0 else [])
-                + ([self.nmr1] if self.nmr1 else [])
-                + ([self.ne_gamma] if self.ne_gamma else [])
-                + [
-                    average,
-                    minimal,
-                ]
+                + ([self.m0] if self.m0 is not None else [])
+                + ([self.m] if self.m is not None else [])
+                + ([self.z_star] if self.z_star is not None else [])
+                + ([self.n_steps] if self.n_steps is not None else [])
+                + ([self.npr0] if self.npr0 is not None else [])
+                + ([self.nmr1] if self.nmr1 is not None else [])
+                + ([self.ne_gamma] if self.ne_gamma is not None else [])
+                + ([self.gamma] if getattr(self, "gamma", None) is not None else [])
+                + [average, minimal]
             )
+
+            # zapis zbiorczy
+            if not file_exists:
+                results_writer.writerow(header)
+
+            results_writer.writerow(row)
+
+        # zapis pojedynczego runu
+        task_dir = os.path.join(
+            "experiments",
+            f"job_array_{array_job_id}",
+            f"{self.topology}"
+            f"_task_{array_task_id}"
+        )
+        
+        os.makedirs(task_dir, exist_ok=True)
+        single_result_path = os.path.join(task_dir, "result.csv")
+
+        with open(single_result_path, "w", newline="") as f:
+            writer = csv.writer(f)
+            writer.writerow(header)
+            writer.writerow(row)
 
     # MAIN PART - GENETIC ALGORITHM STEP
     def step(self):

@@ -91,6 +91,7 @@ n_steps=${n_steps:-500}
 npr0=${npr0:-31}
 nmr1=${nmr1:-500}
 ne_gamma=${ne_gamma:-1}
+gamma=${gamma:-1.0}
 
 ray status
 
@@ -105,7 +106,15 @@ if [[ ! -z $SLURM_ARRAY_TASK_ID ]]; then
     read -a PARAMS <<< "$(sed -n "$((SLURM_ARRAY_TASK_ID + 1))p" ./params.txt)"
     args+=("${PARAMS[@]}")
 else
-    args+=($ISLAND_COUNT $MIGRANT_COUNT $MIGRATION_INTERVAL $M0 $M $z_star $n_steps $npr0 $nmr1 $ne_gamma $seed)
+    if [[ "$TOPOLOGY" == "scale_free" ]]; then
+        args+=($ISLAND_COUNT $MIGRANT_COUNT $MIGRATION_INTERVAL $M0 $M $seed)
+
+    elif [[ "$TOPOLOGY" == "meeting" ]]; then
+        args+=($ISLAND_COUNT $MIGRANT_COUNT $MIGRATION_INTERVAL $z_star $n_steps $npr0 $nmr1 $ne_gamma $gamma $seed)
+
+    else
+        args+=($ISLAND_COUNT $MIGRANT_COUNT $MIGRATION_INTERVAL)
+    fi
 fi
 
 python3 -u islands_desync/start_cyf.py "${args[@]}"

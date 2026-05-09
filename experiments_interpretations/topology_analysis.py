@@ -86,6 +86,7 @@ def save_topology_analysis_from_adj(adj, params, output_dir=None, filename_prefi
         "npr0": getattr(params, "npr0", None),
         "nmr1": getattr(params, "nmr1", None),
         "ne_gamma": getattr(params, "ne_gamma", None),
+        "gamma": getattr(params, "gamma", None)
     }
 
     print("Saving topology to:", os.path.abspath(output_dir))
