@@ -42,10 +42,10 @@ class IslandRunner:
                 size=self.params.island_count,
                 z_star=self.params.z_star,
                 n_steps=self.params.n_steps,
-                npr0=self.params.npr0,
-                nmr1=self.params.nmr1,
-                ne_gamma=self.params.ne_gamma,
+                r0=self.params.r0,
+                r1=self.params.r1,
                 gamma=self.params.gamma,
+                build_target_ratio=self.params.build_target_ratio,
                 seed=self.params.seed,
                 create_object_method=lambda i: islands[i]
             )
@@ -72,8 +72,6 @@ class IslandRunner:
             f"{self.params.topology}"
             f"_task_{array_task_id}"
         )
-
-        self.params.task_dir = run_dir
 
         if hasattr(topology_obj, "_adj"):
             save_topology_analysis_from_adj(topology_obj._adj, self.params, 

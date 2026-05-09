@@ -106,9 +106,10 @@ def create_algorithm_hpc(
         m=params.m,
         z_star=params.z_star,
         n_steps=params.n_steps,
-        npr0=params.npr0,
-        nmr1=params.nmr1,
-        ne_gamma=params.ne_gamma,
+        r0=params.r0,
+        r1=params.r1,
+        gamma=params.gamma,
+        build_target_ratio=params.build_target_ratio,
         seed=params.seed,
         termination_criterion=StoppingByEvaluations(
             max_evaluations=NUMBER_OF_EVALUATIONS

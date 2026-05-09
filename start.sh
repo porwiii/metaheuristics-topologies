@@ -42,10 +42,10 @@ fi
 if [[ "$TOPOLOGY" == "meeting" ]]; then
     export z_star=${z_star:-5}
     export n_steps=${n_steps:-500}
-    export npr0=${npr0:-20}
-    export nmr1=${nmr1:-400}
-    export ne_gamma=${ne_gamma:-1}
-    export gamma=${gamma:-1.0}
+    export r0=${r0:-0.001}
+    export r1=${r1:-2.0}
+    export gamma=${gamma:-0.01}
+    export build_target_ratio=${build_target_ratio:-0.8},
     export seed=${seed:-123}
 fi
 
@@ -85,9 +85,8 @@ if [[ $is_array == 0 ]]; then
     if [[ "$TOPOLOGY" == "meeting" ]]; then
         echo "z_star:             ${z_star}"
         echo "n_steps:            ${n_steps}"
-        echo "npr0:               ${npr0}"
-        echo "nmr1:               ${nmr1}"
-        echo "ne_gamma:           ${ne_gamma}"
+        echo "r0:                 ${r0}"
+        echo "r1:                 ${r1}"
         echo "gamma:              ${gamma}"
     fi
 fi

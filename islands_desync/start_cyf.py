@@ -57,10 +57,10 @@ def main():
             **common_kwargs,
             z_star=int(sys.argv[8]) if len(sys.argv) > 8 and sys.argv[8] else None,
             n_steps=int(sys.argv[9]) if len(sys.argv) > 9 and sys.argv[9] else None,
-            npr0=int(sys.argv[10]) if len(sys.argv) > 10 and sys.argv[10] else None,
-            nmr1=int(sys.argv[11]) if len(sys.argv) > 11 and sys.argv[11] else None,
-            ne_gamma=int(sys.argv[12]) if len(sys.argv) > 12 and sys.argv[12] else None,
-            gamma=float(sys.argv[13]) if len(sys.argv) > 13 and sys.argv[13] else 1.0,
+            r0=float(sys.argv[10]) if len(sys.argv) > 10 and sys.argv[10] else None,
+            r1=float(sys.argv[11]) if len(sys.argv) > 11 and sys.argv[11] else None,
+            gamma=float(sys.argv[12]) if len(sys.argv) > 12 and sys.argv[12] else None,
+            build_target_ratio=float(sys.argv[13]) if len(sys.argv) > 13 and sys.argv[13] else 1.0,
             seed=int(sys.argv[14]) if len(sys.argv) > 14 and sys.argv[14] else None,
         )
 
