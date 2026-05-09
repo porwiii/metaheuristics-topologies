@@ -33,7 +33,7 @@ def main():
     topol=sys.argv[1]
     strateg=sys.argv[2]
 
-    params = RunAlgorithmParams(
+    common_kwargs = dict(
         island_count=int(sys.argv[5]),
         number_of_emigrants=int(sys.argv[6]),
         migration_interval=int(sys.argv[7]),
@@ -42,16 +42,53 @@ def main():
         series_number=1,
         topology=topol,
         strategy=strateg,
-        m0=int(sys.argv[8]) if len(sys.argv) > 8 and sys.argv[8] else None,
-        m=int(sys.argv[9]) if len(sys.argv) > 9 and sys.argv[9] else None,
-
-        z_star=int(sys.argv[10]) if len(sys.argv) > 10 and sys.argv[10] else None,
-        n_steps=int(sys.argv[11]) if len(sys.argv) > 11 and sys.argv[11] else None,
-        npr0=int(sys.argv[12]) if len(sys.argv) > 12 and sys.argv[12] else None,
-        nmr1=int(sys.argv[13]) if len(sys.argv) > 13 and sys.argv[13] else None,
-        ne_gamma=int(sys.argv[14]) if len(sys.argv) > 14 and sys.argv[14] else None,
-        seed=int(sys.argv[15]) if len(sys.argv) > 15 and sys.argv[15] else None
     )
+
+    if topol == "scale_free":
+        params = RunAlgorithmParams(
+            **common_kwargs,
+            m0=int(sys.argv[8]) if len(sys.argv) > 8 and sys.argv[8] else None,
+            m=int(sys.argv[9]) if len(sys.argv) > 9 and sys.argv[9] else None,
+            seed=int(sys.argv[10]) if len(sys.argv) > 10 and sys.argv[10] else None,
+        )
+
+    elif topol == "meeting":
+        params = RunAlgorithmParams(
+            **common_kwargs,
+            z_star=int(sys.argv[8]) if len(sys.argv) > 8 and sys.argv[8] else None,
+            n_steps=int(sys.argv[9]) if len(sys.argv) > 9 and sys.argv[9] else None,
+            npr0=int(sys.argv[10]) if len(sys.argv) > 10 and sys.argv[10] else None,
+            nmr1=int(sys.argv[11]) if len(sys.argv) > 11 and sys.argv[11] else None,
+            ne_gamma=int(sys.argv[12]) if len(sys.argv) > 12 and sys.argv[12] else None,
+            gamma=float(sys.argv[13]) if len(sys.argv) > 13 and sys.argv[13] else 1.0,
+            seed=int(sys.argv[14]) if len(sys.argv) > 14 and sys.argv[14] else None,
+        )
+
+    else:
+        params = RunAlgorithmParams(
+            **common_kwargs,
+            seed=int(sys.argv[8]) if len(sys.argv) > 8 and sys.argv[8] else None,
+        )
+
+    # params = RunAlgorithmParams(
+    #     island_count=int(sys.argv[5]),
+    #     number_of_emigrants=int(sys.argv[6]),
+    #     migration_interval=int(sys.argv[7]),
+    #     dda=sys.argv[3],
+    #     tta=sys.argv[4],
+    #     series_number=1,
+    #     topology=topol,
+    #     strategy=strateg,
+    #     m0=int(sys.argv[8]) if len(sys.argv) > 8 and sys.argv[8] else None,
+    #     m=int(sys.argv[9]) if len(sys.argv) > 9 and sys.argv[9] else None,
+
+    #     z_star=int(sys.argv[10]) if len(sys.argv) > 10 and sys.argv[10] else None,
+    #     n_steps=int(sys.argv[11]) if len(sys.argv) > 11 and sys.argv[11] else None,
+    #     npr0=int(sys.argv[12]) if len(sys.argv) > 12 and sys.argv[12] else None,
+    #     nmr1=int(sys.argv[13]) if len(sys.argv) > 13 and sys.argv[13] else None,
+    #     ne_gamma=int(sys.argv[14]) if len(sys.argv) > 14 and sys.argv[14] else None,
+    #     seed=int(sys.argv[15]) if len(sys.argv) > 15 and sys.argv[15] else None
+    # )
 
     if topol=="torus":
         computation_refs = IslandRunner(TorusTopology, RandomSelect, params).create()

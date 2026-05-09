@@ -36,6 +36,7 @@ export MIGRATION_INTERVAL=${MIGRATION_INTERVAL:-5}
 if [[ "$TOPOLOGY" == "scale_free" ]]; then
     export M0=${M0:-5}
     export M=${M:-3}
+    export seed=${seed:-123}
 fi
 
 if [[ "$TOPOLOGY" == "meeting" ]]; then
@@ -44,6 +45,7 @@ if [[ "$TOPOLOGY" == "meeting" ]]; then
     export npr0=${npr0:-20}
     export nmr1=${nmr1:-400}
     export ne_gamma=${ne_gamma:-1}
+    export gamma=${gamma:-1.0}
     export seed=${seed:-123}
 fi
 
@@ -86,6 +88,7 @@ if [[ $is_array == 0 ]]; then
         echo "npr0:               ${npr0}"
         echo "nmr1:               ${nmr1}"
         echo "ne_gamma:           ${ne_gamma}"
+        echo "gamma:              ${gamma}"
     fi
 fi
 

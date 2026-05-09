@@ -144,3 +144,7 @@ dmypy.json
 
 # Result files
 /results/
+/experiments/
+
+# Params scripts
+params_*.sh

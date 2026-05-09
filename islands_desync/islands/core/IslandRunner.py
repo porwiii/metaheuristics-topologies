@@ -30,10 +30,11 @@ class IslandRunner:
         # budujemy topologię; dla ScaleFreeTopology podajemy też m0 i m
         if self.CreateTopology is ScaleFreeTopology:
             topology_obj = self.CreateTopology(
-                self.params.island_count,
-                self.params.m0,
-                self.params.m,
-                lambda i: islands[i]
+                size=self.params.island_count,
+                m0=self.params.m0,
+                m=self.params.m,
+                seed=self.params.seed,
+                create_object_method=lambda i: islands[i]
             )
 
         elif self.CreateTopology is MeetingTopology:
@@ -44,6 +45,7 @@ class IslandRunner:
                 npr0=self.params.npr0,
                 nmr1=self.params.nmr1,
                 ne_gamma=self.params.ne_gamma,
+                gamma=self.params.gamma,
                 seed=self.params.seed,
                 create_object_method=lambda i: islands[i]
             )

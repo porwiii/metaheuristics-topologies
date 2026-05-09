@@ -79,6 +79,8 @@ def save_topology_analysis_from_adj(adj, params, output_dir=None, filename_prefi
         "island_count": getattr(params, "island_count", None),
         "topology": getattr(params, "topology", None),
         "seed": getattr(params, "seed", None),
+        "m0": getattr(params, "m0", None),
+        "m": getattr(params, "m", None),
         "z_star": getattr(params, "z_star", None),
         "n_steps": getattr(params, "n_steps", None),
         "npr0": getattr(params, "npr0", None),

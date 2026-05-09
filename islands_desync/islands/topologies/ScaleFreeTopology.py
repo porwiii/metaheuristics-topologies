@@ -1,5 +1,5 @@
 from abc import ABC
-from typing import Dict, List
+from typing import Dict, List, Optional
 import random
 from .Topology import Topology
 
@@ -13,7 +13,7 @@ class ScaleFreeTopology(Topology):
     - m: number of edges each new node attaches with (m <= m0)
     - create_object_method: optional mapper from integer index to object
     """
-    def __init__(self, size: int, m0: int, m: int, create_object_method=None):
+    def __init__(self, size: int, m0: int, m: int, create_object_method=None, seed: Optional[int] = None):
         super().__init__(size, create_object_method)
         if m > m0:
             raise ValueError("m_parameter must be <= m0 (initial clique size)")
@@ -21,6 +21,9 @@ class ScaleFreeTopology(Topology):
             raise ValueError("Require 1 <= m0 <= size")
         self.m0 = m0
         self.m = m
+        
+        if seed is not None:
+            random.seed(seed)
 
     def create(self) -> Dict[int, List]:
         # Initialize adjacency sets
