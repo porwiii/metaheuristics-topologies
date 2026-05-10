@@ -673,12 +673,12 @@ class GeneticIslandAlgorithm(GeneticAlgorithm):
 
         csv_path = os.path.join(
             "experiments", 
-            f"job_array_{array_job_id}",
-            Filename.get_csv_name(
             self.topology,
-            self.number_of_islands,
-            self.number_of_emigrants
-        ))
+            f"job_array_{array_job_id}",
+            f"{self.topology}"
+            f"_n{self.number_of_islands}"
+            f"_array_{array_job_id}.csv"
+        )
 
         os.makedirs(os.path.dirname(csv_path), exist_ok=True)
         file_exists = os.path.exists(csv_path)
@@ -734,7 +734,9 @@ class GeneticIslandAlgorithm(GeneticAlgorithm):
         # zapis pojedynczego runu
         task_dir = os.path.join(
             "experiments",
+            self.topology,
             f"job_array_{array_job_id}",
+            "tasks",
             f"{self.topology}"
             f"_task_{array_task_id}"
         )

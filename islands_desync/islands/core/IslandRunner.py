@@ -68,7 +68,9 @@ class IslandRunner:
 
         run_dir = os.path.join(
             "experiments",
+            self.params.topology,
             f"job_array_{array_job_id}",
+            "tasks",
             f"{self.params.topology}"
             f"_task_{array_task_id}"
         )
