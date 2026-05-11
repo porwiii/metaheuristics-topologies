@@ -2,6 +2,7 @@ from typing import Dict, List
 import os
 import csv
 import ray
+import time
 
 from islands_desync.geneticAlgorithm.migrations.ray_migration import RayMigration
 from islands_desync.islands.core.Emigration import Emigration
@@ -47,8 +48,11 @@ class RayMigrationPipeline(RayMigration):
                     "delay_steps",
                     "delay_eval",
                     "send_timestamp",
+                    "receive_timestamp",
+                    "delay_seconds",
                     "fitness"
                 ])
+                
 
     def receive_individuals(self, step_num: int, evaluations: int):
         new_individuals = ray.get(self.new_individuals_refs)
@@ -58,7 +62,6 @@ class RayMigrationPipeline(RayMigration):
             return [], None
 
         new_individuals, migrant_iteration_numbers, migrant_evaluations, ind_timestamps, src_island, fitness = zip(*new_individuals)
-        #new_individuals, migrant_iteration_numbers, ind_timestamps, src_island, fitness = zip(*new_individuals)
 
         delays_eval = []
         delays_steps = []
@@ -73,10 +76,12 @@ class RayMigrationPipeline(RayMigration):
                 src_island,
                 fitness
             ):
+                receive_timestamp = time.time()
+
                 delay_steps = step_num - migrant_iter
                 delay_eval = evaluations - migrant_eval
-
-                # delay_eval = evaluations - migrant_iter
+                delay_seconds = receive_timestamp - timestamp
+        
                 delays_eval.append(delay_eval)
                 delays_steps.append(delay_steps)
 
@@ -90,6 +95,8 @@ class RayMigrationPipeline(RayMigration):
                     delay_steps,
                     delay_eval,
                     timestamp,
+                    receive_timestamp,
+                    delay_seconds,
                     fit
                 ])
                 
