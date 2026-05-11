@@ -22,5 +22,5 @@ class RunAlgorithmParams:
     r0: float | None = None
     r1: float | None = None
     gamma: float | None = None
-    build_target_ratio | None = None
+    build_target_ratio: float | None = None
     seed: int | None = None

@@ -308,9 +308,13 @@ class GeneticIslandAlgorithm(GeneticAlgorithm):
                     self.step_num,
                 )
                 return
+            
+            #print("[DEBUG] self.migration =", self.migration, flush=True)
+            #print("[DEBUG] self.migration type =", type(self.migration), flush=True)
+            #print("[DEBUG] self.migration module =", type(self.migration).__module__, flush=True)
 
             self.migration.migrate_individuals(
-                individuals_to_migrate, self.step_num, self.island, time.time(), self.island
+                individuals_to_migrate, self.step_num, self.island, self.evaluations, time.time(), self.island
             )
 
     def add_new_individuals(self):

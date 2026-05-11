@@ -1,7 +1,7 @@
 import json
 import sys
 from math import trunc
-
+import os
 import pika as pika
 from algorithm.genetic_island_algorithm import GeneticIslandAlgorithm
 from generator.island_solution_generator import IslandSolutionGenerator
@@ -63,6 +63,21 @@ def run():
     #
     problem = Rastrigin(NUMBER_OF_VARIABLES)
 
+    array_job_id = os.getenv("SLURM_ARRAY_JOB_ID", os.getenv("SLURM_JOB_ID", "local"))
+    array_task_id = os.getenv("SLURM_ARRAY_TASK_ID", "local")
+
+    topology = os.getenv("TOPOLOGY", "unknown_topology")
+
+    task_dir = os.path.join(
+        "experiments",
+        topology,
+        f"job_array_{array_job_id}",
+        "tasks",
+        f"{topology}_task_{array_task_id}"
+    )
+
+    os.makedirs(task_dir, exist_ok=True)
+
     rabbitmq_delays = configuration["island_delays"]
 
     channel = CreateRabbitmqChannels(
@@ -80,11 +95,13 @@ def run():
         offspring_population_size=OFFSPRING_POPULATION_SIZE,
         wyspWRun=int(sys.argv[4]),
     ).create_channels()
+
     migration = QueueMigration(
         island,
         channel=channel,
         number_of_islands=configuration["number_of_islands"],
         rabbitmq_delays=rabbitmq_delays,
+        task_dir=task_dir,
     )
 
     if island == 0:
