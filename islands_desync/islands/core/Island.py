@@ -40,3 +40,6 @@ class Island:
 
     def __repr__(self):
         return "Island %s" % self.island_id
+    
+    def get_island_id(self):
+        return self.island_id

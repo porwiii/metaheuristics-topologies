@@ -81,9 +81,10 @@ class GeneticIslandAlgorithm(GeneticAlgorithm):
         # Meeting
         z_star: int | None,
         n_steps: int | None,
-        npr0: int | None,
-        nmr1: int | None,
-        ne_gamma: int | None,
+        r0: float | None,
+        r1: float | None,
+        gamma: float | None,
+        build_target_ratio: float | None,
         seed: int | None,
 
         termination_criterion: TerminationCriterion = store.default_termination_criteria,
@@ -137,9 +138,10 @@ class GeneticIslandAlgorithm(GeneticAlgorithm):
         self.m = m
         self.z_star = z_star
         self.n_steps = n_steps
-        self.npr0 = npr0
-        self.nmr1 = nmr1
-        self.ne_gamma = ne_gamma
+        self.r0 = r0
+        self.r1 = r1
+        self.gamma = gamma
+        self.build_target_ratio = build_target_ratio
         self.seed = seed
 
         self.ts1 = time.time()
@@ -306,9 +308,13 @@ class GeneticIslandAlgorithm(GeneticAlgorithm):
                     self.step_num,
                 )
                 return
+            
+            #print("[DEBUG] self.migration =", self.migration, flush=True)
+            #print("[DEBUG] self.migration type =", type(self.migration), flush=True)
+            #print("[DEBUG] self.migration module =", type(self.migration).__module__, flush=True)
 
             self.migration.migrate_individuals(
-                individuals_to_migrate, self.step_num, self.island, time.time(), self.island
+                individuals_to_migrate, self.step_num, self.island, self.evaluations, time.time(), self.island
             )
 
     def add_new_individuals(self):
@@ -671,19 +677,12 @@ class GeneticIslandAlgorithm(GeneticAlgorithm):
 
         csv_path = os.path.join(
             "experiments", 
-            f"job_array_{array_job_id}",
-            Filename.get_csv_name(
             self.topology,
-            self.number_of_islands,
-            self.number_of_emigrants
-            # self.m0,
-            # self.m,
-            # self.z_star,
-            # self.n_steps,
-            # self.npr0,
-            # self.nmr1,
-            # self.ne_gamma
-        ))
+            f"job_array_{array_job_id}",
+            f"{self.topology}"
+            f"_n{self.number_of_islands}"
+            f"_array_{array_job_id}.csv"
+        )
 
         os.makedirs(os.path.dirname(csv_path), exist_ok=True)
         file_exists = os.path.exists(csv_path)
@@ -704,10 +703,11 @@ class GeneticIslandAlgorithm(GeneticAlgorithm):
                 + (["m"] if self.m is not None else [])
                 + (["z_star"] if self.z_star is not None else [])
                 + (["n_steps"] if self.n_steps is not None else [])
-                + (["npr0"] if self.npr0 is not None else [])
-                + (["nmr1"] if self.nmr1 is not None else [])
-                + (["ne_gamma"] if self.ne_gamma is not None else [])
-                + (["gamma"] if getattr(self, "gamma", None) is not None else [])
+                + (["r0"] if self.r0 is not None else [])
+                + (["r1"] if self.r1 is not None else [])
+                + (["gamma"] if self.gamma is not None else [])
+                + (["build_target_ratio"] if self.build_target_ratio is not None else [])
+                + (["seed"] if self.seed is not None else [])
                 + ["average", "best"]
             )
 
@@ -723,10 +723,11 @@ class GeneticIslandAlgorithm(GeneticAlgorithm):
                 + ([self.m] if self.m is not None else [])
                 + ([self.z_star] if self.z_star is not None else [])
                 + ([self.n_steps] if self.n_steps is not None else [])
-                + ([self.npr0] if self.npr0 is not None else [])
-                + ([self.nmr1] if self.nmr1 is not None else [])
-                + ([self.ne_gamma] if self.ne_gamma is not None else [])
-                + ([self.gamma] if getattr(self, "gamma", None) is not None else [])
+                + ([self.r0] if self.r0 is not None else [])
+                + ([self.r1] if self.r1 is not None else [])
+                + ([self.gamma] if self.gamma is not None else [])
+                + ([self.build_target_ratio] if self.build_target_ratio is not None else [])
+                + ([self.seed] if self.seed is not None else [])
                 + [average, minimal]
             )
 
@@ -739,11 +740,13 @@ class GeneticIslandAlgorithm(GeneticAlgorithm):
         # zapis pojedynczego runu
         task_dir = os.path.join(
             "experiments",
+            self.topology,
             f"job_array_{array_job_id}",
+            "tasks",
             f"{self.topology}"
             f"_task_{array_task_id}"
         )
-        
+
         os.makedirs(task_dir, exist_ok=True)
         single_result_path = os.path.join(task_dir, "result.csv")
 

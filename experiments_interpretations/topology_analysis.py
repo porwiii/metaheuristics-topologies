@@ -83,10 +83,10 @@ def save_topology_analysis_from_adj(adj, params, output_dir=None, filename_prefi
         "m": getattr(params, "m", None),
         "z_star": getattr(params, "z_star", None),
         "n_steps": getattr(params, "n_steps", None),
-        "npr0": getattr(params, "npr0", None),
-        "nmr1": getattr(params, "nmr1", None),
-        "ne_gamma": getattr(params, "ne_gamma", None),
-        "gamma": getattr(params, "gamma", None)
+        "r0": getattr(params, "npr0", None),
+        "r1": getattr(params, "nmr1", None),
+        "gamma": getattr(params, "gamma", None),
+        "build_target_ratio": getattr(params, "build_target_ratio", None)
     }
 
     print("Saving topology to:", os.path.abspath(output_dir))

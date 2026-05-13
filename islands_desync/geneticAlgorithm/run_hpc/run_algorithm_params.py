@@ -19,8 +19,8 @@ class RunAlgorithmParams:
     # Optional params for MeetingTopology
     z_star: int | None = None
     n_steps: int | None = None
-    npr0: int | None = None
-    nmr1: int | None = None
-    ne_gamma: int | None = None
-    gamma: float = 1.0
+    r0: float | None = None
+    r1: float | None = None
+    gamma: float | None = None
+    build_target_ratio: float | None = None
     seed: int | None = None
