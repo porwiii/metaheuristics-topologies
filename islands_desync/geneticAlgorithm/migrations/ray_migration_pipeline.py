@@ -35,23 +35,23 @@ class RayMigrationPipeline(RayMigration):
 
         self.delay_csv_path = os.path.join(self.delay_dir, "migration_delays.csv")
 
-        if not os.path.exists(self.delay_csv_path):
-            with open(self.delay_csv_path, "w", newline="") as f:
-                writer = csv.writer(f)
-                writer.writerow([
-                    "recv_step",
-                    "recv_eval",
-                    "from_island",
-                    "to_island",
-                    "send_step",
-                    "send_eval",
-                    "delay_steps",
-                    "delay_eval",
-                    "send_timestamp",
-                    "receive_timestamp",
-                    "delay_seconds",
-                    "fitness"
-                ])
+        # if not os.path.exists(self.delay_csv_path):
+        #     with open(self.delay_csv_path, "w", newline="") as f:
+        #         writer = csv.writer(f)
+        #         writer.writerow([
+        #             "recv_step",
+        #             "recv_eval",
+        #             "from_island",
+        #             "to_island",
+        #             "send_step",
+        #             "send_eval",
+        #             "delay_steps",
+        #             "delay_eval",
+        #             "send_timestamp",
+        #             "receive_timestamp",
+        #             "delay_seconds",
+        #             "fitness"
+        #         ])
                 
 
     def receive_individuals(self, step_num: int, evaluations: int):
@@ -65,40 +65,41 @@ class RayMigrationPipeline(RayMigration):
 
         delays_eval = []
         delays_steps = []
+        delays_seconds = []
 
-        with open(self.delay_csv_path, "a", newline="") as f:
-            writer = csv.writer(f)
+        # with open(self.delay_csv_path, "a", newline="") as f:
+        #     writer = csv.writer(f)
 
-            for migrant_iter, migrant_eval, timestamp, source, fit in zip(
-                migrant_iteration_numbers,
-                migrant_evaluations,
-                ind_timestamps,
-                src_island,
-                fitness
-            ):
-                receive_timestamp = time.time()
+        #     for migrant_iter, migrant_eval, timestamp, source, fit in zip(
+        #         migrant_iteration_numbers,
+        #         migrant_evaluations,
+        #         ind_timestamps,
+        #         src_island,
+        #         fitness
+        #     ):
+        #         receive_timestamp = time.time()
 
-                delay_steps = step_num - migrant_iter
-                delay_eval = evaluations - migrant_eval
-                delay_seconds = receive_timestamp - timestamp
+        #         delay_steps = step_num - migrant_iter
+        #         delay_eval = evaluations - migrant_eval
+        #         delay_seconds = receive_timestamp - timestamp
         
-                delays_eval.append(delay_eval)
-                delays_steps.append(delay_steps)
+        #         delays_eval.append(delay_eval)
+        #         delays_steps.append(delay_steps)
 
-                writer.writerow([
-                    step_num,
-                    evaluations,
-                    source,
-                    self.to_island,
-                    migrant_iter,
-                    migrant_eval,
-                    delay_steps,
-                    delay_eval,
-                    timestamp,
-                    receive_timestamp,
-                    delay_seconds,
-                    fit
-                ])
+        #         writer.writerow([
+        #             step_num,
+        #             evaluations,
+        #             source,
+        #             self.to_island,
+        #             migrant_iter,
+        #             migrant_eval,
+        #             delay_steps,
+        #             delay_eval,
+        #             timestamp,
+        #             receive_timestamp,
+        #             delay_seconds,
+        #             fit
+        #         ])
                 
                 # print(
                 #     f"[DELAY] recv_step={step_num}, recv_eval={evaluations}, "
@@ -109,6 +110,24 @@ class RayMigrationPipeline(RayMigration):
                 #     flush=True
                 # )
 
+        receive_timestamp = time.time()
+
+        for migrant_iter, migrant_eval, timestamp, source, fit in zip(
+            migrant_iteration_numbers,
+            migrant_evaluations,
+            ind_timestamps,
+            src_island,
+            fitness
+        ):
+
+            delay_steps = step_num - migrant_iter
+            delay_eval = evaluations - migrant_eval
+            delay_seconds = receive_timestamp - timestamp
+
+            delays_eval.append(delay_eval)
+            delays_steps.append(delay_steps)
+            delays_seconds.append(delay_seconds)
+
         migration_at_step_num = {
             "step": step_num,
             "ev": evaluations,
@@ -117,7 +136,8 @@ class RayMigrationPipeline(RayMigration):
             "src_islands": src_island,
             "fitnesses": fitness,
             "delay_evals": delays_eval,
-            "delay_steps": delays_steps
+            "delay_steps": delays_steps,
+            "delay_seconds": delays_seconds,
         }
 
         return list(new_individuals), migration_at_step_num

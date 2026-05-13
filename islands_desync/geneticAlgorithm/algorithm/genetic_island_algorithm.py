@@ -707,6 +707,7 @@ class GeneticIslandAlgorithm(GeneticAlgorithm):
                 + (["r1"] if self.r1 is not None else [])
                 + (["gamma"] if self.gamma is not None else [])
                 + (["build_target_ratio"] if self.build_target_ratio is not None else [])
+                + (["seed"] if self.seed is not None else [])
                 + ["average", "best"]
             )
 
@@ -726,6 +727,7 @@ class GeneticIslandAlgorithm(GeneticAlgorithm):
                 + ([self.r1] if self.r1 is not None else [])
                 + ([self.gamma] if self.gamma is not None else [])
                 + ([self.build_target_ratio] if self.build_target_ratio is not None else [])
+                + ([self.seed] if self.seed is not None else [])
                 + [average, minimal]
             )
 
