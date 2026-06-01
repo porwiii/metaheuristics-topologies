@@ -13,7 +13,7 @@ from islands_desync.islands.core.Emigration import Emigration
 from islands_desync.islands.core.SignalActor import SignalActor
 
 
-@ray.remote(num_cpus=0.25)
+@ray.remote(num_cpus=1.0)
 class Computation:
     def __init__(
         self,
@@ -44,6 +44,7 @@ class Computation:
             "ips": self.algorithm.step_num / self.migration.run_time(),
             "start": self.migration.start,
             "end": self.migration.end,
+            "log_path": self.algorithm.path
         }
 
         print(f"\nIsland: {self.n} Fitness: {result.objectives[0]}")

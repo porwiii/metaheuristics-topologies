@@ -2,6 +2,7 @@ import json
 import sys
 from datetime import datetime
 import os
+import shutil
 os.environ["RAY_DEDUP_LOGS"] = "0"
 import ray
 from islands.core.IslandRunner import IslandRunner
@@ -106,6 +107,26 @@ def main():
     print("w Start_cyf - przed ray.get")
 
     results = ray.get(computation_refs)
+
+    if params.topology is not None:
+        array_job_id = os.getenv("SLURM_ARRAY_JOB_ID", os.getenv("SLURM_JOB_ID", "local"))
+        array_task_id = os.getenv("SLURM_ARRAY_TASK_ID", "local")
+
+    src = results[0]["log_path"]
+
+    dst = os.path.join(
+        "experiments",
+        params.topology,
+        f"job_array_{array_job_id}",
+        "tasks",
+        f"{params.topology}_task_{array_task_id}",
+        "logs",
+    )
+
+    if os.path.exists(dst):
+        shutil.rmtree(dst)
+
+    shutil.copytree(src, dst)
 
     iterations = {result["island"]: result for result in results}
 
