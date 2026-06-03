@@ -108,36 +108,41 @@ def main():
 
     results = ray.get(computation_refs)
 
-    if params.topology is not None:
-        array_job_id = os.getenv("SLURM_ARRAY_JOB_ID", os.getenv("SLURM_JOB_ID", "local"))
-        array_task_id = os.getenv("SLURM_ARRAY_TASK_ID", "local")
+    save_logs = False
 
-    src = results[0]["log_path"]
+    if save_logs:
+        if params.topology is not None:
+            array_job_id = os.getenv("SLURM_ARRAY_JOB_ID", os.getenv("SLURM_JOB_ID", "local"))
+            array_task_id = os.getenv("SLURM_ARRAY_TASK_ID", "local")
 
-    dst = os.path.join(
-        "experiments",
-        params.topology,
-        f"job_array_{array_job_id}",
-        "tasks",
-        f"{params.topology}_task_{array_task_id}",
-        "logs",
-    )
+        src = results[0]["log_path"]
 
-    if os.path.exists(dst):
-        shutil.rmtree(dst)
+        dst = os.path.join(
+            "experiments",
+            params.topology,
+            f"job_array_{array_job_id}",
+            "tasks",
+            f"{params.topology}_task_{array_task_id}",
+            "logs",
+        )
 
-    shutil.copytree(src, dst)
+        if os.path.exists(dst):
+            shutil.rmtree(dst)
 
-    iterations = {result["island"]: result for result in results}
+        shutil.copytree(src, dst)
 
-    with open(
-        "logs/"
-        + "iterations_per_second"
-        + datetime.now().strftime("%m-%d-%Y_%H%M")
-        + ".json",
-        "w",
-    ) as f:
-        json.dump(iterations, f)
+        #print(src)
+
+    # iterations = {result["island"]: result for result in results}
+
+    # with open(
+    #     "logs/"
+    #     + "iterations_per_second"
+    #     + datetime.now().strftime("%m-%d-%Y_%H%M")
+    #     + ".json",
+    #     "w",
+    # ) as f:
+    #     json.dump(iterations, f)
 
 
 if __name__ == "__main__":
