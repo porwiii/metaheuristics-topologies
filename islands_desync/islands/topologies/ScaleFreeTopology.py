@@ -15,19 +15,25 @@ class ScaleFreeTopology(Topology):
     """
     def __init__(self, size: int, m0: int, m: int, create_object_method=None, seed: Optional[int] = None):
         super().__init__(size, create_object_method)
+        
+        # Parameters validation
+        if m0 < 2:
+            raise ValueError("m0 must be at least 2 so that the initial graph has edges.")
+        if size < m0:
+            raise ValueError("size must be greater than or equal to m0.")
+        if m < 1:
+            raise ValueError("m must be at least 1.")
         if m > m0:
-            raise ValueError("m_parameter must be <= m0 (initial clique size)")
-        if m0 < 1 or size < m0:
-            raise ValueError("Require 1 <= m0 <= size")
+            raise ValueError("m must be less than or equal to m0.")
+        
         self.m0 = m0
         self.m = m
-        
-        if seed is not None:
-            random.seed(seed)
+        self._rng = random.Random(seed)
 
     def create(self) -> Dict[int, List]:
         # Initialize adjacency sets
         self._adj = [set() for _ in range(self.size)]
+        rng = self._rng
 
         # 1) Start with a complete graph on m0 nodes
         for u in range(self.m0):
@@ -45,7 +51,7 @@ class ScaleFreeTopology(Topology):
             # Select m distinct targets using weighted sampling without replacement
             targets = set()
             while len(targets) < self.m:
-                r = random.random() * total_degree
+                r = rng.random() * total_degree
                 cum = 0.0
                 for j, deg in zip(existing, degrees):
                     cum += deg
@@ -60,7 +66,6 @@ class ScaleFreeTopology(Topology):
 
         # Convert to output format with create_object_method
         return {
-            
             i: [self.create_object_method(j) for j in sorted(self._adj[i])]
             for i in range(self.size)
         }
