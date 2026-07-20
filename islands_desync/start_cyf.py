@@ -71,26 +71,6 @@ def main():
             seed=int(sys.argv[8]) if len(sys.argv) > 8 and sys.argv[8] else None,
         )
 
-    # params = RunAlgorithmParams(
-    #     island_count=int(sys.argv[5]),
-    #     number_of_emigrants=int(sys.argv[6]),
-    #     migration_interval=int(sys.argv[7]),
-    #     dda=sys.argv[3],
-    #     tta=sys.argv[4],
-    #     series_number=1,
-    #     topology=topol,
-    #     strategy=strateg,
-    #     m0=int(sys.argv[8]) if len(sys.argv) > 8 and sys.argv[8] else None,
-    #     m=int(sys.argv[9]) if len(sys.argv) > 9 and sys.argv[9] else None,
-
-    #     z_star=int(sys.argv[10]) if len(sys.argv) > 10 and sys.argv[10] else None,
-    #     n_steps=int(sys.argv[11]) if len(sys.argv) > 11 and sys.argv[11] else None,
-    #     npr0=int(sys.argv[12]) if len(sys.argv) > 12 and sys.argv[12] else None,
-    #     nmr1=int(sys.argv[13]) if len(sys.argv) > 13 and sys.argv[13] else None,
-    #     ne_gamma=int(sys.argv[14]) if len(sys.argv) > 14 and sys.argv[14] else None,
-    #     seed=int(sys.argv[15]) if len(sys.argv) > 15 and sys.argv[15] else None
-    # )
-
     if topol=="torus":
         computation_refs = IslandRunner(TorusTopology, RandomSelect, params).create()
     if topol=="ring":
@@ -108,12 +88,11 @@ def main():
 
     results = ray.get(computation_refs)
 
-    save_logs = False
+    save_logs = os.getenv("SAVE_LOGS", "false").strip().lower() in ("1", "true", "yes")
 
-    if save_logs:
-        if params.topology is not None:
-            array_job_id = os.getenv("SLURM_ARRAY_JOB_ID", os.getenv("SLURM_JOB_ID", "local"))
-            array_task_id = os.getenv("SLURM_ARRAY_TASK_ID", "local")
+    if save_logs and params.topology is not None:
+        array_job_id = os.getenv("SLURM_ARRAY_JOB_ID", os.getenv("SLURM_JOB_ID", "local"))
+        array_task_id = os.getenv("SLURM_ARRAY_TASK_ID", "local")
 
         src = results[0]["log_path"]
 
@@ -130,20 +109,6 @@ def main():
             shutil.rmtree(dst)
 
         shutil.copytree(src, dst)
-
-        #print(src)
-
-    # iterations = {result["island"]: result for result in results}
-
-    # with open(
-    #     "logs/"
-    #     + "iterations_per_second"
-    #     + datetime.now().strftime("%m-%d-%Y_%H%M")
-    #     + ".json",
-    #     "w",
-    # ) as f:
-    #     json.dump(iterations, f)
-
 
 if __name__ == "__main__":
     main()
