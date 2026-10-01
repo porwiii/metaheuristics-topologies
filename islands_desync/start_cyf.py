@@ -17,6 +17,7 @@ from islands_desync.islands.topologies.CompleteTopology import CompleteTopology
 from islands_desync.islands.topologies.ERTopology import ERTopology
 from islands_desync.islands.topologies.ScaleFreeTopology import ScaleFreeTopology
 from islands_desync.islands.topologies.MeetingTopology import MeetingTopology
+from islands_desync.islands.topologies.CommunityTopology import CommunityTopology
  
 
 def main():
@@ -65,6 +66,16 @@ def main():
             seed=int(sys.argv[14]) if len(sys.argv) > 14 and sys.argv[14] else None,
         )
 
+    elif topol == "community":
+        params = RunAlgorithmParams(
+            **common_kwargs,
+            z_star=int(sys.argv[8]) if len(sys.argv) > 8 and sys.argv[8] else None,
+            r0=float(sys.argv[9]) if len(sys.argv) > 9 and sys.argv[9] else None,
+            r1=float(sys.argv[10]) if len(sys.argv) > 10 and sys.argv[10] else None,
+            build_target_ratio=float(sys.argv[11]) if len(sys.argv) > 11 and sys.argv[11] else 1.0,
+            seed=int(sys.argv[12]) if len(sys.argv) > 12 and sys.argv[12] else None,
+        )
+
     else:
         params = RunAlgorithmParams(
             **common_kwargs,
@@ -83,6 +94,8 @@ def main():
         computation_refs = IslandRunner(ScaleFreeTopology, RandomSelect, params).create()
     if topol=="meeting":
         computation_refs = IslandRunner(MeetingTopology, RandomSelect, params).create()
+    if topol=="community":
+        computation_refs = IslandRunner(CommunityTopology, RandomSelect, params).create()
 
     print("w Start_cyf - przed ray.get")
 

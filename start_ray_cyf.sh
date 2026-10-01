@@ -94,6 +94,11 @@ n_steps=500,
 npr0=int(20**2*0.0005),
 nmr1=20*2,
 ne_gamma=int(20*0.005),
+# new community topology params
+community_z_star=5,
+community_r0=int(20**2*0.0005),
+community_r1=20*2,
+community_build_target_ratio=0.8,
 
 ray status
 

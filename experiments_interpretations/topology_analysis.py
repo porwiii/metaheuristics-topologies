@@ -101,3 +101,4 @@ def save_topology_analysis_from_adj(adj, params, output_dir=None, filename_prefi
     nx.write_graphml(G, graphml_path)
 
     return metrics
+

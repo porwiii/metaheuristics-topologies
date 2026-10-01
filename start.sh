@@ -49,6 +49,14 @@ if [[ "$TOPOLOGY" == "meeting" ]]; then
     export seed=${seed:-123}
 fi
 
+if [[ "$TOPOLOGY" == "community" ]]; then
+    export z_star=${z_star:-5}
+    export r0=${r0:-0.001}
+    export r1=${r1:-2.0}
+    export build_target_ratio=${build_target_ratio:-0.8},
+    export seed=${seed:-123}
+fi
+
 
 if [[ -z "$SBATCH_NODES" ]]; then
     x=$(bc -l <<< "($ISLAND_COUNT * $CPU_PER_ISLAND) / $SBATCH_CPUS_PER_TASK")
@@ -88,6 +96,12 @@ if [[ $is_array == 0 ]]; then
         echo "r0:                 ${r0}"
         echo "r1:                 ${r1}"
         echo "gamma:              ${gamma}"
+    fi
+
+    if [[ "$TOPOLOGY" == "community" ]]; then
+        echo "z_star:             ${z_star}"
+        echo "r0:                 ${r0}"
+        echo "r1:                 ${r1}"
     fi
 fi
 

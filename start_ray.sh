@@ -92,6 +92,7 @@ npr0=${npr0:-31}
 nmr1=${nmr1:-500}
 ne_gamma=${ne_gamma:-1}
 gamma=${gamma:-1.0}
+build_target_ratio=${build_target_ratio:-0.8}
 
 ray status
 
@@ -111,6 +112,9 @@ else
 
     elif [[ "$TOPOLOGY" == "meeting" ]]; then
         args+=($ISLAND_COUNT $MIGRANT_COUNT $MIGRATION_INTERVAL $z_star $n_steps $npr0 $nmr1 $ne_gamma $gamma $seed)
+
+    elif [[ "$TOPOLOGY" == "community" ]]; then
+        args+=($ISLAND_COUNT $MIGRANT_COUNT $MIGRATION_INTERVAL $z_star $npr0 $nmr1 $build_target_ratio $seed)
 
     else
         args+=($ISLAND_COUNT $MIGRANT_COUNT $MIGRATION_INTERVAL)

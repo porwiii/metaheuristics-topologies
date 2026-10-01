@@ -11,6 +11,7 @@ from islands_desync.islands.core.SignalActor import SignalActor
 from islands_desync.islands.topologies.TorusTopology import TorusTopology
 from islands_desync.islands.topologies.ScaleFreeTopology import ScaleFreeTopology
 from islands_desync.islands.topologies.MeetingTopology import MeetingTopology
+from islands_desync.islands.topologies.CommunityTopology import CommunityTopology
 
 from experiments_interpretations.topology_analysis import save_topology_analysis_from_adj
 
@@ -49,7 +50,18 @@ class IslandRunner:
                 seed=self.params.seed,
                 create_object_method=lambda i: islands[i]
             )
-        
+
+        elif self.CreateTopology is CommunityTopology:
+            topology_obj = self.CreateTopology(
+                size=self.params.island_count,
+                z_star=self.params.z_star,
+                r0=self.params.r0,
+                r1=self.params.r1,
+                build_target_ratio=self.params.build_target_ratio,
+                seed=self.params.seed,
+                create_object_method=lambda i: islands[i]
+            )
+
         else:
             topology_obj = self.CreateTopology(
                 self.params.island_count, lambda i: islands[i]
